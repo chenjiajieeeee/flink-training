@@ -74,6 +74,14 @@ public class RidesAndFaresSolution {
         DataStream<TaxiFare> fares = env.addSource(fareSource).keyBy(fare -> fare.rideId);
 
         // Create the pipeline.
+        //解释一下这段代码
+        //这段代码是将两个数据流连接起来
+        //rides是一个数据流，fares也是一个数据流
+        //这里的uid和name有什么作用
+        //uid是这个操作的状态的唯一标识符
+        //name是这个操作在web UI中的名字
+        //这个操作是一个sink，sink是一个数据流的目的地
+        //这个sink是一个PrintSinkFunction，是一个打印的目的地
         rides.connect(fares)
                 .flatMap(new EnrichmentFunction())
                 .uid("enrichment") // uid for this operator's state
@@ -107,6 +115,10 @@ public class RidesAndFaresSolution {
         // Setting up checkpointing so that the state can be explored with the State Processor API.
         // Generally it's better to separate configuration settings from the code,
         // but for this example it's convenient to have it here for running in the IDE.
+        //解释一下这段代码
+        //这段代码是设置checkpointing的配置
+        //checkpointing是Flink的一个机制，用来保证数据的一致性
+        //checkpointing是Flink的一个重要特性
         Configuration conf = new Configuration();
         conf.setString("state.backend", "filesystem");
         conf.setString("state.checkpoints.dir", "file:///tmp/checkpoints");
@@ -119,16 +131,25 @@ public class RidesAndFaresSolution {
 
         job.execute(env);
     }
-
+    //解释一下这个类是拿来干嘛的
+    //这个类是一个sink，sink是一个数据流的目的地
+    //这个sink是一个PrintSinkFunction，是一个打印的目的地
+    //这个sink是一个泛型类，泛型是RideAndFare
+    //RideAndFare是一个类，是一个数据类型
     public static class EnrichmentFunction
             extends RichCoFlatMapFunction<TaxiRide, TaxiFare, RideAndFare> {
+        //我的理解就是两个数据流，保证他两有关联，所以就设置了两个状态，一个是rideState，一个是fareState
+        //然后两边分别拿出来这个状态填进去？
+
 
         private ValueState<TaxiRide> rideState;
         private ValueState<TaxiFare> fareState;
 
         @Override
         public void open(Configuration config) {
-
+            //解释一下这段代码
+            //这段代码是初始化状态
+            //状态是Flink的一个重要特性
             rideState =
                     getRuntimeContext()
                             .getState(new ValueStateDescriptor<>("saved ride", TaxiRide.class));

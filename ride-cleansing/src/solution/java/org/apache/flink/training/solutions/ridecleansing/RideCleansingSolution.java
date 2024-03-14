@@ -35,7 +35,12 @@ import org.apache.flink.training.exercises.common.utils.GeoUtils;
  * that both start and end within New York City. The resulting stream should be printed.
  */
 public class RideCleansingSolution {
-
+    //解释一下下面这两个参数
+    //source是数据源，sink是数据的目的地
+    //这个数据源和DataStream有什么区别
+    //DataStream是Flink的数据流，是Flink的数据处理的基本单元
+    //source是Flink的数据源，是Flink的数据流的来源
+    //sink是Flink的数据目的地，是Flink的数据流的结束
     private final SourceFunction<TaxiRide> source;
     private final SinkFunction<TaxiRide> sink;
 
@@ -70,6 +75,8 @@ public class RideCleansingSolution {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // set up the pipeline
+        //这里的source是数据源，sink是数据的目的地
+        //解释一下，这样写是不是已经不需要datastream了?
         env.addSource(source).filter(new NYCFilter()).addSink(sink);
 
         // run the pipeline and return the result

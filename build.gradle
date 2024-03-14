@@ -289,3 +289,14 @@ static def String classNamePropertyToTaskName(String property) {
             property.substring(1, property.lastIndexOf('ClassName'))
 
 }
+repositories {
+    // for access from China, you may need to uncomment this line
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenCentral()
+    maven {
+        url "https://repository.apache.org/content/repositories/snapshots/"
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+}
